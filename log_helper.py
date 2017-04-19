@@ -4,8 +4,7 @@ np.random.seed(1008)
 from sklearn.feature_extraction import FeatureHasher  
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import KFold 
-from sklearn import metrics as SKM
-import pickle
+from sklearn import metrics as SKM 
 import re
 import nltk 
 import time 

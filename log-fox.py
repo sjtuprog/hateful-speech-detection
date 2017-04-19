@@ -119,7 +119,7 @@ def textToDic(t):
 
 
 
-def cv(): 
+def cross_validation(): 
     tweets = loadJson('../corpus/comment/full-comments-u.json')
      
 
@@ -184,4 +184,4 @@ def cv():
     print 'Overall\t%f\t%f\t%f\t%f\t%f' %(sum(A)/len(A),sum(P)/len(P),sum(R)/len(R),sum(F)/len(F),sum(U)/len(U))
  
 
-cv()
+cross_validation()
