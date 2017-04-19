@@ -53,19 +53,19 @@ for fold in range(10):
 	y_predict = model.predict(x_test,batch_size=batches)
 	
 	pred = open('predictions/lstm-%d.txt' % fold , 'w')
-    for i in range(len(y_predict)):
-          pred.writelines(str(y_predict[i][0])+'\n')
-
+	for i in range(len(y_predict)):
+		pred.writelines(str(y_predict[i][0])+'\n')
 
 	a,p,r,f,u = data_helpers.metrics(y_test,y_predict)
 	print('Accuracy:\tPrecision:\tRecall:\tF-score:\tAUC:') 
 	print('%f\t%f\t%f\t%f\t%f'%(a, p, r, f, u))	
 	rnn.save_model(model,saveJ,saveW)
 	A += [a]
-    P += [p]
-    R += [r]
-    F += [f]
-    U += [u]
+	P += [p]
+	R += [r]
+	F += [f]
+	U += [u]
+
 print('Overall')
 print('%f\t%f\t%f\t%f\t%f' %(sum(A)/len(A),sum(P)/len(P),sum(R)/len(R),sum(F)/len(F),sum(U)/len(U)))
 
