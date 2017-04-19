@@ -173,6 +173,10 @@ def cv():
         R.append(r)
         F.append(f)
         U.append(u)
+        
+        pred = open('predictions/log-%d.txt' % split ,'w')
+        for i in range(len(y_predict)):
+            pred.writelines(str(y_predict[i][1])+'\n')
 
         print '%d\t%f\t%f\t%f\t%f\t%f' % (split,a,p,r,f,u) 
         split+=1
