@@ -20,7 +20,7 @@ D = read_LIWC('../corpus/liwc.dic')
 
 L = loadEmotionLexicon('../corpus/NRC-emotion-lexicon.txt') 
 
-def get_LIWC(t,label):
+def getLIWC(t,label):
     global D
     C = {}
     z = np.zeros(125)
@@ -34,7 +34,7 @@ def get_LIWC(t,label):
         addDic(c,C)
     return C
 
-def get_lexicon_emotion_feature(t,label):
+def getNRC(t,label):
     global L
     lexicon = L
     words = cleanStr(t[label]).split()
@@ -91,11 +91,11 @@ def getNF(t,label):
     c = getChar(t,label)
     w = getWord(t,label)
 
-    l = get_LIWC(t,label)
-    e = get_lexicon_emotion_feature(t,label) 
+    l = getLIWC(t,label)
+    e = getNRC(t,label) 
      
 
-    d = mergeFeature(c,w,l,e) 
+    d = mergeFeature(c,e,w,l) 
 
 
     return d
@@ -105,12 +105,11 @@ def getNF(t,label):
 def textToDic(t):  
     text = getNF(t,'text')
 
-    title = getNF(t,'title')   
+    title =  getNF(t,'title')   
 
     user = getNF(t,'user')
  
-     
-    d = mergeFeature(user) 
+    d = mergeFeature(text,title,user) 
  
     return d
 
@@ -120,14 +119,14 @@ def textToDic(t):
 
 
 def cross_validation(): 
-    tweets = loadJson('../corpus/comment/full-comments-u.json')
+    comments = loadJson('../corpus/comment/full-comments-u.json')
      
 
     x_train = []
     y_train = []
     
-    for i in tqdm(range(0,len(tweets))):
-        t = tweets[i]
+    for i in tqdm(range(0,len(comments))):
+        t = comments[i]
         x_train += [ textToDic(t)   ] 
         y_train += [ int(t['label']>0)   ]   
 
@@ -142,12 +141,12 @@ def cross_validation():
     X = hasher.transform(x_train)
     y = np.asarray(y_train)
     
-    clf = LogisticRegression(C=1.0, dual=False, fit_intercept=True, intercept_scaling=1, class_weight='balanced', penalty='l2',n_jobs=4)
- 
+    
     splits = 10
 
     kf = KFold(n_splits= splits,shuffle=True, random_state=123)
-    split = 0
+    clf = LogisticRegression(C=1.0, dual=False, fit_intercept=True, intercept_scaling=1, class_weight='balanced', max_iter=100, penalty='l2',n_jobs=4)
+  
 
     A = []
     P = []
@@ -155,6 +154,7 @@ def cross_validation():
     F = []
     T = []
     U = []
+
     for train_index, test_index in kf.split(X):
         T += [(train_index, test_index)]
  
@@ -174,12 +174,11 @@ def cross_validation():
         F.append(f)
         U.append(u)
         
-        pred = open('predictions/log-%d.txt' % split ,'w')
-        for i in range(len(y_predict)):
-            pred.writelines(str(y_predict[i][1])+'\n')
+        pred = open('predictions/log-%d.txt' % i ,'w')
+        for j in range(len(y_predict)):
+            pred.writelines(str(y_predict[j][1])+'\n')
 
-        print '%d\t%f\t%f\t%f\t%f\t%f' % (split,a,p,r,f,u) 
-        split+=1
+        print '%d\t%f\t%f\t%f\t%f\t%f' % (i,a,p,r,f,u) 
  
     print 'Overall\t%f\t%f\t%f\t%f\t%f' %(sum(A)/len(A),sum(P)/len(P),sum(R)/len(R),sum(F)/len(F),sum(U)/len(U))
  
