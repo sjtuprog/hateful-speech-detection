@@ -17,7 +17,7 @@ from keras.callbacks import *
 from keras.models import * 
 from keras.layers.core import *
 from keras.layers import Input, Embedding, LSTM, Dense, merge, TimeDistributed ,Bidirectional
-
+#for attention ,see https://github.com/philipperemy/keras-attention-mechanism
 
 def save_model(model,saveJ,saveW):
 	json_string = model.to_json()
